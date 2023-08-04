@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .forms import LoginForm
 from django.contrib import messages
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, logout, authenticate
 
 # Create your views here.
 def index(request):
@@ -13,6 +13,9 @@ def log(request):
 
 def sign_in(request):
     if request.method == 'GET':
+        if request.user.is_authenticated:
+            return redirect('log')
+
         form = LoginForm()
         return render(request, 'distance/login.html', {'form': form})
     
@@ -31,3 +34,8 @@ def sign_in(request):
         # form isn't valid or unauthenticated user
         messages.error(request, f"Invalid username or password, please try again!")
         return render(request, 'distance/login.html', {'form': form})
+    
+def sign_out(request):
+    logout(request)
+    messages.success(request, f"You're now logged out. Why are you logging out?")
+    return redirect('login')
