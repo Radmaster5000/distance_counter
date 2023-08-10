@@ -8,10 +8,12 @@
     <body>
         <div class="navbar">
             {% if request.user.is_authenticated %}
+                <!--ADD ANY LINKS FOR AN AUTHENTICATED USER: LOG DISTANCE, LEADERBOARDS, STATS-->
                 <span>User: {{ request.user.username | title }}</span>
                 <a href="{% url 'logout' %}">Logout</a>
             {% else %}
                 <a href="{% url 'login' %}">Login</a>
+                <a href="{% url 'register' %}">Register</a>
             {% endif %}
         </div>
         {% if messages %}
