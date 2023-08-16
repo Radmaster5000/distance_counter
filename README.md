@@ -10,4 +10,8 @@ distance_counter for SWE Level 5
 This will run the page from http://127.0.0.1:8000 which will return an error.
 The 'homepage' is currently as above with /distance added to the end, so http://127.0.0.1:8000/distance
 
-Login page works, but there's no current way to register.
+Alternatively use http://127.0.0.1:8000/admin for the Admin View
+
+Login page works, and new users can register themselves.
+Database created and ready to be populated.
+Still looks awful.
