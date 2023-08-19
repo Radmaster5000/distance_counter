@@ -2,5 +2,14 @@
 
 {% block body %}
     <h1>Keep travelling and keep logging your distances here!</h1>
+    <ul>
+        {% for distance in distances %}
+            <li>
+                <a href="{% url 'distance' distance.id %}">
+                    Distance log {{ distance.id }}: {{distance.date}}: {{distance.person}}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
     <a href="{% url 'log' %}">Log a distance</a>
 {% endblock %}

@@ -13,5 +13,10 @@ The 'homepage' is currently as above with /distance added to the end, so http://
 Alternatively use http://127.0.0.1:8000/admin for the Admin View
 
 Login page works, and new users can register themselves.
+
 Database created and ready to be populated.
+
+Index page now shows all current logs, and each log is a link to an 
+individual page for that log
+
 Still looks awful.

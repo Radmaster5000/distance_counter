@@ -3,10 +3,19 @@ from django.http import HttpResponse
 from .forms import LoginForm, RegisterForm
 from django.contrib import messages
 from django.contrib.auth import login, logout, authenticate
+from .models import Distance
 
 # Create your views here.
 def index(request):
-    return render(request, "distance/index.html")
+    return render(request, "distance/index.html", {
+        "distances": Distance.objects.all()
+    })
+
+def distance( request, distance_id):
+    distance = Distance.objects.get(pk=distance_id)
+    return render(request, "distance/distances.html", {
+        "distance": distance
+    })
 
 def log(request):
     return render(request, "distance/log.html")
