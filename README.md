@@ -19,4 +19,6 @@ Database created and ready to be populated.
 Index page now shows all current logs, and each log is a link to an 
 individual page for that log
 
+Log page now takes data and saves it to the database
+
 Still looks awful.

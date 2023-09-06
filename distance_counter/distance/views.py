@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .forms import LoginForm, RegisterForm
+from .forms import LoginForm, RegisterForm, LogForm
 from django.contrib import messages
 from django.contrib.auth import login, logout, authenticate
 from .models import Distance
@@ -18,7 +18,16 @@ def distance( request, distance_id):
     })
 
 def log(request):
-    return render(request, "distance/log.html")
+    if request.method == 'GET':
+        context = {'form': LogForm()}
+        return render(request, "distance/log.html", context)
+    elif request.method == 'POST':
+        form = LogForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('index')
+        else:
+            return render(request, "distance/log.html", {'form': form})
 
 def sign_in(request):
     if request.method == 'GET':

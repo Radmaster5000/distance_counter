@@ -32,3 +32,4 @@ class Distance(models.Model):
 
     def __str__(self):
         return f"{self.date}: {self.person.last_name}, {self.person.first_name}"
+
