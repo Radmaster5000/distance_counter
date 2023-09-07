@@ -1,9 +1,10 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .forms import LoginForm, RegisterForm, LogForm
+from .forms import LoginForm, RegisterForm, LogForm, OfficeForm, PersonForm, UnitForm, LogForm
 from django.contrib import messages
 from django.contrib.auth import login, logout, authenticate
-from .models import Distance
+from django.contrib.auth.models import User
+from .models import Distance, Person
 
 # Create your views here.
 def index(request):
@@ -19,7 +20,12 @@ def distance( request, distance_id):
 
 def log(request):
     if request.method == 'GET':
-        context = {'form': LogForm()}
+        # Getting all the users from the users table to populate the selectable
+        # people in the 'Person' dropdown
+        users = User.objects.all()
+        person_options = [(user.id, user.username) for user in users]
+        form = LogForm(initial={'person': person_options})
+        context = {'form': form}
         return render(request, "distance/log.html", context)
     elif request.method == 'POST':
         form = LogForm(request.POST)
@@ -74,3 +80,43 @@ def register(request):
             return redirect('log')
         else:
             return render(request, 'distance/register.html', {'form': form})
+        
+def office_create(request):
+    if request.method == 'POST':
+        form = OfficeForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('index')
+    else:
+        form = OfficeForm()
+    return render(request, 'distance/office_create.html', {'form': form})
+
+def person_create(request):
+    if request.method == 'POST':
+        form = PersonForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('index')
+    else:
+        form = PersonForm()
+    return render(request, 'distance/person_create.html', {'form': form})
+
+def unit_create(request):
+    if request.method == 'POST':
+        form = UnitForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('index')
+    else:
+        form = UnitForm()
+    return render(request, 'distance/unit_create.html', {'form': form})
+
+def log_create(request):
+    if request.method == 'POST':
+        form = LogForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('index')
+    else:
+        form = LogForm()
+    return render(request, 'distance/log_create.html', {'form': form})

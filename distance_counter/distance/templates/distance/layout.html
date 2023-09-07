@@ -9,8 +9,13 @@
         <div class="navbar">
             {% if request.user.is_authenticated %}
                 <!--ADD ANY LINKS FOR AN AUTHENTICATED USER: LOG DISTANCE, LEADERBOARDS, STATS-->
-                <span>User: {{ request.user.username | title }}</span>
+                <div style="color: orange; margin: 10px">Currently logged in as: {{ request.user.username | title }}</div>
                 <a href="{% url 'logout' %}">Logout</a>
+                <a href="{% url 'log' %}">Record Distance</a>
+                <a href="{% url 'index' %}">View all Distances</a>
+                {% if user.is_superuser %}
+                    <a href="{% url 'admin:index' %}">Admin</a>
+                {% endif %}
             {% else %}
                 <a href="{% url 'login' %}">Login</a>
                 <a href="{% url 'register' %}">Register</a>
