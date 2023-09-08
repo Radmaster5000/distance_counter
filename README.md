@@ -21,4 +21,8 @@ individual page for that log
 
 Log page now takes data and saves it to the database
 
+Added CREATE pages so users can input data to the database tables from  the frontend without having to use admin pages.
+
+Added bootstrap styling and dropdown for CREATE pages on Navbar (odd behaviour though)
+
 Still looks awful.
