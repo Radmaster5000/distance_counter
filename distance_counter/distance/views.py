@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from .forms import LoginForm, RegisterForm, LogForm, OfficeForm, PersonForm, UnitForm, LogForm
 from django.contrib import messages
@@ -120,3 +120,17 @@ def log_create(request):
     else:
         form = LogForm()
     return render(request, 'distance/log_create.html', {'form': form})
+
+def distance_edit(request, distance_id):
+    distance = get_object_or_404(Distance, pk=distance_id)
+
+    if request.method == 'POST':
+        form = LogForm(request.POST, instance=distance)
+        if form.is_valid():
+            form.save()
+            return redirect('distance', distance_id=distance_id)
+
+    else:
+        form = LogForm(instance=distance)
+
+    return render(request, 'distance/edit.html', {'form': form, 'distance': distance})

@@ -11,7 +11,8 @@ urlpatterns = [
     path('office/create/', views.office_create, name='office_create'),
     path('log/create/', views.log_create, name='log_create'),
     path('person/create/', views.person_create, name='person_create'),
-    path('unit/create/', views.unit_create, name='unit_create')
+    path('unit/create/', views.unit_create, name='unit_create'),
+    path("<int:distance_id>/edit/", views.distance_edit, name="distance_edit")
 
 ]
 

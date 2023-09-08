@@ -25,4 +25,6 @@ Added CREATE pages so users can input data to the database tables from  the fron
 
 Added bootstrap styling and dropdown for CREATE pages on Navbar (odd behaviour though)
 
+Added functionality to edit records from the frontend.
+
 Still looks awful.

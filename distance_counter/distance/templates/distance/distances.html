@@ -8,4 +8,5 @@
         <li>Person: {{ distance.person }}</li>
         <li>Distance: {{ distance.distance }} {{ distance.unit }}</li>
     </ul>
+    <a href="{% url 'distance_edit' distance_id=distance.id %}">Edit</a>
 {% endblock %}
