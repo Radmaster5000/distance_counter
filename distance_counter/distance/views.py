@@ -134,3 +134,28 @@ def distance_edit(request, distance_id):
         form = LogForm(instance=distance)
 
     return render(request, 'distance/edit.html', {'form': form, 'distance': distance})
+
+def people(request):
+    return render(request, "distance/people.html", {
+        "people": Person.objects.all()
+    })
+
+def person( request, person_id):
+    person = Person.objects.get(pk=person_id)
+    return render(request, "distance/people.html", {
+        "person": person
+    })
+
+def person_edit(request, person_id):
+    person = get_object_or_404(Person, pk=person_id)
+
+    if request.method == 'POST':
+        form = LogForm(request.POST, instance=person)
+        if form.is_valid():
+            form.save()
+            return redirect('person', person_id=person_id)
+
+    else:
+        form = LogForm(instance=person)
+
+    return render(request, 'distance/edit.html', {'form': form, 'person': person})

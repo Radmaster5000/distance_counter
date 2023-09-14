@@ -12,7 +12,10 @@ urlpatterns = [
     path('log/create/', views.log_create, name='log_create'),
     path('person/create/', views.person_create, name='person_create'),
     path('unit/create/', views.unit_create, name='unit_create'),
-    path("<int:distance_id>/edit/", views.distance_edit, name="distance_edit")
+    path("<int:distance_id>", views.distance_edit, name="distance_edit"),
+    path("people/<int:person_id>", views.person, name="person"),
+    path("people/<int:person_id>/edit/", views.person_edit, name="person_edit"),
+    path("people/", views.people, name="people")
 
 ]
 
