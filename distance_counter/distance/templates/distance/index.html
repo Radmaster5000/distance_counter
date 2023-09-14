@@ -2,14 +2,35 @@
 
 {% block body %}
     <h1>Keep travelling and keep logging your distances here!</h1>
-    <ul>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Record</th>
+                <th scope="col">Date</th>
+                <th scope="col">Person</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for distance in distances %}
+                <tr>
+                    <th scope="row"><a href="{% url 'distance' distance.id %}">{{ distance.id }}</a></th>
+                    <td>{{ distance.date }}</td>
+                    <td>{{ distance.person }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <!-- <ul>
         {% for distance in distances %}
             <li>
-                <a href="{% url 'distance' distance.id %}">
+                <p>
                     Distance log {{ distance.id }}: {{distance.date}}: {{distance.person}}
-                </a>
+                    <a href="{% url 'distance' distance.id %}">View record</a>
+                </p>
+                
             </li>
         {% endfor %}
-    </ul>
+    </ul> -->
     <a href="{% url 'log' %}">Log a distance</a>
 {% endblock %}

@@ -2,7 +2,7 @@
 
 {% block body %}
 
-    <form method="post">
+    <form class="form-inline" method="post">
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit">Save</button>

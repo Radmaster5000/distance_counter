@@ -10,7 +10,7 @@
         <div class="navbar">
             {% if request.user.is_authenticated %}
                 <!--ADD ANY LINKS FOR AN AUTHENTICATED USER: LOG DISTANCE, LEADERBOARDS, STATS-->
-                <div style="color: orange; margin: 10px">Currently logged in as: {{ request.user.username | title }}</div>
+                <div style="color: rgb(14, 59, 156); margin: 10px">Currently logged in as: {{ request.user.username | title }}</div>
                 <a href="{% url 'logout' %}">Logout</a>
                 <a href="{% url 'log' %}">Record Distance</a>
                 <a href="{% url 'index' %}">View all Distances</a>
@@ -18,7 +18,7 @@
                     <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                       Create
                     </button>
-                    <ul class="dropdown-menu dropdown-menu-positioning"style="position: inherit">
+                    <ul class="dropdown-menu dropdown-menu-end">
                       <li><a class="dropdown-item" href="{% url 'person_create' %}">Person</a></li>
                       <li><a class="dropdown-item" href="{% url 'office_create' %}">Office</a></li>
                       <li><a class="dropdown-item" href="{% url 'unit_create' %}">Unit</a></li>
