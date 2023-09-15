@@ -1,0 +1,23 @@
+{% extends "distance/layout.html" %}
+
+{% block body %}
+    <h1>{{ person.first_name }} {{ person.last_name }}</h1>
+
+    <ul>
+        <li>First Name: {{ person.first_name }}</li>
+        <li>Last Name: {{ person.last_name }}</li>
+        <li>Email: {{ person.email }}</li>
+        <li>Location: {{ person.location }}</li>
+    </ul>
+    <div style="display: flex;">
+        <button class="btn btn-warning"><a href="{% url 'person_edit' person_id=person.id %}">Edit</a></button>
+    
+        {% if user.is_superuser %}
+        <form action="{% url 'delete_person' person.id %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger" onclick="return confirm('WARNING: This action will delete the record permanently. Are you sure you want to delete this person?')">Delete</button>
+        </form>
+        <!-- <a href="{% url 'delete_person' person.id %}" class="btn btn-danger" onclick="return confirm('WARNING: This action will delete the record permanently. Are you sure you want to delete this person?')">Delete</a> -->
+        {% endif %}
+    </div>
+{% endblock %}
