@@ -6,25 +6,22 @@
     <table class="table">
         <thead>
             <tr>
-                <th scope="col">Record</th>
+                <th scope="col">Email</th>
                 <th scope="col">First Name</th>
                 <th scope="col">Last Name</th>
-                <th scope="col">Email</th>
                 <th scope="col">Location</th>
             </tr>
         </thead>
         <tbody>
-            {% for person in people %}
+            {% for person in persons %}
                 <tr>
-                    <th scope="row">{{ person.id }}</th>
+                    <th scope="row"><a href="{% url 'person' person.id %}">{{ person.email }}</a></th>
                     <td>{{ person.first_name }}</td>
                     <td>{{ person.last_name }}</td>
-                    <td>{{ person.email }}</td>
                     <td>{{ person.location }}</td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
-    <a href="{% url 'log' %}">Log a distance</a>
 {% endblock %}
 

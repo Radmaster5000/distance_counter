@@ -6,20 +6,20 @@
     <table class="table">
         <thead>
             <tr>
-                <th scope="col">Record</th>
                 <th scope="col">Date</th>
                 <th scope="col">Person</th>
+                <th scope="col">Distance</th>
             </tr>
         </thead>
         <tbody>
             {% for distance in distances %}
                 <tr>
-                    <th scope="row"><a href="{% url 'distance' distance.id %}">{{ distance.id }}</a></th>
-                    <td>{{ distance.date }}</td>
+                    <th scope="row"><a href="{% url 'distance' distance.id %}">{{ distance.date }}</a></th>
                     <td>{{ distance.person }}</td>
+                    <td>{{ distance.distance }} {{ distance.unit }}</td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
-    <a href="{% url 'log' %}">Log a distance</a>
+
 {% endblock %}

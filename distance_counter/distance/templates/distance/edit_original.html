@@ -1,11 +1,12 @@
 {% extends "distance/layout.html" %}
 
 {% block body %}
+    <h1>Edit Distance {{ distance.id }}</h1>
 
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit">Save</button>
+        <button type="submit">Save Changes</button>
     </form>
 
 {% endblock %}

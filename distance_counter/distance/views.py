@@ -89,7 +89,7 @@ def office_create(request):
             return redirect('index')
     else:
         form = OfficeForm()
-    return render(request, 'distance/office_create.html', {'form': form})
+    return render(request, 'distance/create.html', {'form': form})
 
 def person_create(request):
     if request.method == 'POST':
@@ -99,7 +99,7 @@ def person_create(request):
             return redirect('index')
     else:
         form = PersonForm()
-    return render(request, 'distance/person_create.html', {'form': form})
+    return render(request, 'distance/create.html', {'form': form})
 
 def unit_create(request):
     if request.method == 'POST':
@@ -109,7 +109,7 @@ def unit_create(request):
             return redirect('index')
     else:
         form = UnitForm()
-    return render(request, 'distance/unit_create.html', {'form': form})
+    return render(request, 'distance/create.html', {'form': form})
 
 def log_create(request):
     if request.method == 'POST':
@@ -119,7 +119,7 @@ def log_create(request):
             return redirect('index')
     else:
         form = LogForm()
-    return render(request, 'distance/log_create.html', {'form': form})
+    return render(request, 'distance/create.html', {'form': form})
 
 def distance_edit(request, distance_id):
     distance = get_object_or_404(Distance, pk=distance_id)
@@ -135,14 +135,23 @@ def distance_edit(request, distance_id):
 
     return render(request, 'distance/edit.html', {'form': form, 'distance': distance})
 
+def delete_distance(request, distance_id):
+    distance = get_object_or_404(Distance, pk=distance_id)
+    
+    if request.method == 'POST':
+        distance.delete()
+        return redirect('index')  
+    return redirect('distance', distance_id=distance_id)  
+
 def people(request):
+    people = Person.objects.all()
     return render(request, "distance/people.html", {
-        "people": Person.objects.all()
+        "persons": people   
     })
 
 def person( request, person_id):
     person = Person.objects.get(pk=person_id)
-    return render(request, "distance/people.html", {
+    return render(request, "distance/person.html", {
         "person": person
     })
 
@@ -150,12 +159,20 @@ def person_edit(request, person_id):
     person = get_object_or_404(Person, pk=person_id)
 
     if request.method == 'POST':
-        form = LogForm(request.POST, instance=person)
+        form = PersonForm(request.POST, instance=person)
         if form.is_valid():
             form.save()
             return redirect('person', person_id=person_id)
 
     else:
-        form = LogForm(instance=person)
+        form = PersonForm(instance=person)
 
     return render(request, 'distance/edit.html', {'form': form, 'person': person})
+
+def delete_person(request, person_id):
+    person = get_object_or_404(Person, pk=person_id)
+
+    if request.method == 'POST':
+        person.delete()
+        return redirect('people')  # Redirect to the list of people or another appropriate page
+    return redirect('person', person_id=person_id)  # Handle GET requests by redirecting to person detail view
