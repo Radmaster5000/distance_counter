@@ -1,0 +1,20 @@
+{% extends "distance/layout.html" %}
+
+{% block body %}
+    <h1>Units</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Unit</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for unit in units %}
+                <tr>
+                    <th scope="row"><a href="{% url 'unit' unit.id %}">{{ unit.unit_of_measurement }}</a></th>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

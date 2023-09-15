@@ -1,0 +1,20 @@
+{% extends "distance/layout.html" %}
+
+{% block body %}
+    <h1>Office Record</h1>
+
+    <ul>
+        <li>City: {{ office.city }}</li>
+        <li>Country: {{ office.country }}</li>
+    </ul>
+    <div style="display: flex;">
+        <button class="btn btn-warning"><a href="{% url 'office_edit' office_id=office.id %}">Edit</a></button>
+    
+        {% if user.is_superuser %}
+        <form action="{% url 'delete_office' office.id %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger" onclick="return confirm('WARNING: This action will delete the record permanently. Are you sure you want to delete this office?')">Delete</button>
+        </form>
+        {% endif %}
+    </div>
+{% endblock %}

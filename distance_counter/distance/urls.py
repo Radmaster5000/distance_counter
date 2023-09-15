@@ -18,6 +18,13 @@ urlpatterns = [
     path("people/<int:person_id>/edit/", views.person_edit, name="person_edit"),
     path("people/", views.people, name="people"),
     path('person/<int:person_id>/delete/', views.delete_person, name='delete_person'),
-
+    path("office/<int:office_id>", views.office, name="office"),
+    path("offices/<int:office_id>/edit/", views.office_edit, name="office_edit"),
+    path("offices/", views.offices, name="offices"),
+    path('office/<int:office_id>/delete/', views.delete_office, name='delete_office'),
+    path("unit/<int:unit_id>", views.unit, name="unit"),
+    path("units/<int:unit_id>/edit/", views.unit_edit, name="unit_edit"),
+    path("units/", views.units, name="units"),
+    path('unit/<int:unit_id>/delete/', views.delete_unit, name='delete_unit'),
 ]
 

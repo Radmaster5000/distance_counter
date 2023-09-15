@@ -13,8 +13,6 @@
                 <div style="color: rgb(14, 59, 156); margin: 10px">Currently logged in as: {{ request.user.username | title }}</div>
                 <a href="{% url 'logout' %}">Logout</a>
                 <a href="{% url 'log' %}">Record Distance</a>
-                <a href="{% url 'index' %}">View all Distances</a>
-                <a href="{% url 'people' %}">View all People</a>
                 <div class="dropdown">
                     <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                       Create
@@ -24,7 +22,18 @@
                       <li><a class="dropdown-item" href="{% url 'office_create' %}">Office</a></li>
                       <li><a class="dropdown-item" href="{% url 'unit_create' %}">Unit</a></li>
                     </ul>
-                  </div>
+                </div>
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        View
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="{% url 'index' %}">Distances</a></li>
+                        <li><a class="dropdown-item" href="{% url 'people' %}">People</a></li>
+                        <li><a class="dropdown-item" href="{% url 'offices' %}">Offices</a></li>
+                        <li><a class="dropdown-item" href="{% url 'units' %}">Units</a></li>
+                    </ul>
+                </div>
                 {% if user.is_superuser %}
                     <a href="{% url 'admin:index' %}">Admin</a>
                 {% endif %}

@@ -4,7 +4,7 @@ from .forms import LoginForm, RegisterForm, LogForm, OfficeForm, PersonForm, Uni
 from django.contrib import messages
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.models import User
-from .models import Distance, Person
+from .models import Distance, Person, Office, Unit
 
 # Create your views here.
 def index(request):
@@ -174,5 +174,73 @@ def delete_person(request, person_id):
 
     if request.method == 'POST':
         person.delete()
-        return redirect('people')  # Redirect to the list of people or another appropriate page
-    return redirect('person', person_id=person_id)  # Handle GET requests by redirecting to person detail view
+        return redirect('people') 
+    return redirect('person', person_id=person_id) 
+
+def offices(request):
+    offices = Office.objects.all()
+    return render(request, "distance/offices.html", {
+        "offices": offices  
+    })
+
+def office( request, office_id):
+    office = Office.objects.get(pk=office_id)
+    return render(request, "distance/office.html", {
+        "office": office
+    })
+
+def office_edit(request, office_id):
+    office = get_object_or_404(Office, pk=office_id)
+
+    if request.method == 'POST':
+        form = OfficeForm(request.POST, instance=office)
+        if form.is_valid():
+            form.save()
+            return redirect('office', office_id=office_id)
+
+    else:
+        form = OfficeForm(instance=office)
+
+    return render(request, 'distance/edit.html', {'form': form, 'office': office})
+
+def delete_office(request, office_id):
+    office = get_object_or_404(Office, pk=office_id)
+
+    if request.method == 'POST':
+        office.delete()
+        return redirect('offices') 
+    return redirect('office', office_id=office_id) 
+
+def units(request):
+    units = Unit.objects.all()
+    return render(request, "distance/units.html", {
+        "units": units  
+    })
+
+def unit( request, unit_id):
+    unit = Unit.objects.get(pk=unit_id)
+    return render(request, "distance/unit.html", {
+        "unit": unit
+    })
+
+def unit_edit(request, unit_id):
+    unit = get_object_or_404(Unit, pk=unit_id)
+
+    if request.method == 'POST':
+        form = UnitForm(request.POST, instance=unit)
+        if form.is_valid():
+            form.save()
+            return redirect('unit', unit_id=unit_id)
+
+    else:
+        form = UnitForm(instance=unit)
+
+    return render(request, 'distance/edit.html', {'form': form, 'unit': unit})
+
+def delete_unit(request, unit_id):
+    unit = get_object_or_404(Unit, pk=unit_id)
+
+    if request.method == 'POST':
+        unit.delete()
+        return redirect('units') 
+    return redirect('unit', unit_id=unit_id) 
