@@ -17,8 +17,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 
+
 urlpatterns = [
     path("distance/", include("distance.urls")),
     path('admin/', admin.site.urls),
     path("", include("distance.urls"))
 ]
+
+handler404 = 'distance.views.custom_404'
+handler400 = 'distance.views.custom_404'

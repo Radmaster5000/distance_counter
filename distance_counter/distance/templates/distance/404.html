@@ -1,0 +1,16 @@
+{% extends "distance/layout.html" %}
+
+{% block body %}
+    <div class="d-flex align-items-center justify-content-center vh-100">
+        <div class="text-center row">
+            <img src="https://emoji.gg/emoji/6635_sadblob" alt="sad blob emoji" class="img-fluid">
+            <div>
+                <p class="fs-3">Uh oh! Page not found.</p>
+                <p class="lead">Please make sure you are logged in!</p>
+                <button type="submit" class="btn btn-secondary"><a href="{% url 'login' %}">Login</a></button>
+            </div>
+
+        </div>
+    </div>
+
+{% endblock %}

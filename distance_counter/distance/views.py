@@ -4,9 +4,11 @@ from .forms import LoginForm, RegisterForm, LogForm, OfficeForm, PersonForm, Uni
 from django.contrib import messages
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
 from .models import Distance, Person, Office, Unit
 
 # Create your views here.
+@login_required
 def index(request):
     return render(request, "distance/index.html", {
         "distances": Distance.objects.all()
@@ -81,6 +83,7 @@ def register(request):
         else:
             return render(request, 'distance/register.html', {'form': form})
         
+@login_required        
 def office_create(request):
     if request.method == 'POST':
         form = OfficeForm(request.POST)
@@ -244,3 +247,6 @@ def delete_unit(request, unit_id):
         unit.delete()
         return redirect('units') 
     return redirect('unit', unit_id=unit_id) 
+
+def custom_404(request, exception):
+    return render(request, '404.html', status=404)
