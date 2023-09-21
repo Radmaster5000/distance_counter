@@ -6,6 +6,7 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from .models import Distance, Person, Office, Unit
+from django.core.exceptions import ObjectDoesNotExist
 
 # Create your views here.
 
@@ -23,8 +24,8 @@ def index(request):
         "distances": Distance.objects.all()
     })
 
-@login_required
 
+@login_required
 def distance( request, distance_id):
     """
     Displays the details of a specific distance record
@@ -36,10 +37,13 @@ def distance( request, distance_id):
     Returns:
         HttpResponse: The rendered distance detail page
     """
-    distance = Distance.objects.get(pk=distance_id)
+    distance = get_object_or_404(Distance, pk=distance_id)
+
     return render(request, "distance/distances.html", {
-        "distance": distance
+    "distance": distance
     })
+
+
 
 @login_required
 def log(request):
@@ -55,15 +59,16 @@ def log(request):
     if request.method == 'GET':
         # Getting all the users from the users table to populate the selectable
         # people in the 'Person' dropdown
-        users = User.objects.all()
-        person_options = [(user.id, user.username) for user in users]
-        form = LogForm(initial={'person': person_options})
+        # users = User.objects.all()
+        # person_options = [(user.id, user.username) for user in users]
+        form = LogForm()
         context = {'form': form}
         return render(request, "distance/log.html", context)
     elif request.method == 'POST':
         form = LogForm(request.POST)
         if form.is_valid():
             form.save()
+            messages.success(request, f"Distance logged successfully!")
             return redirect('index')
         else:
             return render(request, "distance/log.html", {'form': form})
@@ -159,6 +164,7 @@ def office_create(request):
         form = OfficeForm(request.POST)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Office created successfully!')
             return redirect('index')
     else:
         form = OfficeForm()
@@ -179,6 +185,7 @@ def person_create(request):
         form = PersonForm(request.POST)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Person created successfully!')
             return redirect('index')
     else:
         form = PersonForm()
@@ -199,6 +206,7 @@ def unit_create(request):
         form = UnitForm(request.POST)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Unit created successfully!')
             return redirect('index')
     else:
         form = UnitForm()
@@ -219,6 +227,7 @@ def log_create(request):
         form = LogForm(request.POST)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Distance created successfully!')
             return redirect('index')
     else:
         form = LogForm()
@@ -242,6 +251,7 @@ def distance_edit(request, distance_id):
         form = LogForm(request.POST, instance=distance)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Distance edited successfully!')
             return redirect('distance', distance_id=distance_id)
 
     else:
@@ -266,6 +276,7 @@ def delete_distance(request, distance_id):
     
     if request.method == 'POST':
         distance.delete()
+        messages.success(request, 'Distance Deleted successfully!')
         return redirect('index')  
     return redirect('distance', distance_id=distance_id)  
 
@@ -322,6 +333,7 @@ def person_edit(request, person_id):
         form = PersonForm(request.POST, instance=person)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Person edited successfully!')
             return redirect('person', person_id=person_id)
 
     else:
@@ -346,6 +358,7 @@ def delete_person(request, person_id):
 
     if request.method == 'POST':
         person.delete()
+        messages.success(request, 'Person deleted successfully!')
         return redirect('people') 
     return redirect('person', person_id=person_id) 
 
@@ -402,6 +415,7 @@ def office_edit(request, office_id):
         form = OfficeForm(request.POST, instance=office)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Office edited successfully!')
             return redirect('office', office_id=office_id)
 
     else:
@@ -426,6 +440,7 @@ def delete_office(request, office_id):
 
     if request.method == 'POST':
         office.delete()
+        messages.success(request, 'Office deleted successfully!')
         return redirect('offices') 
     return redirect('office', office_id=office_id) 
 
@@ -482,6 +497,7 @@ def unit_edit(request, unit_id):
         form = UnitForm(request.POST, instance=unit)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Unit edited successfully!')
             return redirect('unit', unit_id=unit_id)
 
     else:
@@ -506,5 +522,6 @@ def delete_unit(request, unit_id):
 
     if request.method == 'POST':
         unit.delete()
+        messages.success(request, 'Unit deleted successfully!')
         return redirect('units') 
     return redirect('unit', unit_id=unit_id) 

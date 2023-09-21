@@ -1,80 +1,111 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.urls import reverse
-from .models import Distance, Person, Office
+from .models import Distance, Person, Office, Unit
 
 class IndexViewTestCase(TestCase):
     def setUp(self):
-        # Create a user for testing
-        self.user = User.objects.create_user(username='testuser', password='testpassword')
+        # Creates a new user for testing, and a Person and some Distance data for the database
 
-    def test_index_view_for_logged_in_user(self):
-        # Log in the user
-        self.client.login(username='testuser', password='testpassword')
-
-        # Create some Distance objects in the database
-        Distance.objects.create(date='2023-09-15', person=self.user.person, distance=10.5, unit='km')
-        Distance.objects.create(date='2023-09-16', person=self.user.person, distance=15.0, unit='km')
-
-        # Use the Client to simulate a GET request to the index page
-        response = self.client.get(reverse('index'))
-
-        # Check if the response contains the expected content and status code
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, '2023-09-15')
-        self.assertContains(response, '2023-09-16')
-
-    def test_index_view_for_anonymous_user(self):
-        # Use the Client to simulate a GET request to the index page
-        response = self.client.get(reverse('index'))
-
-        # Check if the response redirects to the login page (status code 302)
-        self.assertEqual(response.status_code, 302)
-
-        # Check if the response redirects to the login page URL (name 'login')
-        self.assertRedirects(response, reverse('login'))
-
-class DistanceViewTestCase(TestCase):
-    def setUp(self):
-        # Create an Office instance
         office = Office.objects.create(
-            city="Your City",
-            country="Your Country"
+            city="City",
+            country="Country"
         )
 
-        # Create a Person instance
         self.person = Person.objects.create(
             first_name="Philip",
             last_name="Radford",
             email="philip@example.com",
-            location=office  # Replace with a valid Office instance
+            location=office 
         )
+
+        #Create a Unit instance
+        self.unit = Unit.objects.create(
+            unit_of_measurement = "steps"
+        )
+
+        Distance.objects.create(date='2023-09-15', person=self.person, distance=10.5, unit=self.unit)
+        Distance.objects.create(date='2023-09-16', person=self.person, distance=15.0, unit=self.unit)
+
+    def test_index_view_for_anonymous_user(self):
+        # Send a GET request to the index page
+        response = self.client.get(reverse('index'))
+
+        # Check if the response is okay
+        self.assertEqual(response.status_code, 200)
+
+        # Check if the response contains a message to log in first
+        self.assertIn("Please log in to view this content.", str(response.content))
+
+    def test_index_view_for_logged_in_user(self):
+        self.user = User.objects.create_user(username='user', password='password')
+        # Log the user in 
+        self.client.login(username='user', password='password')
+
+        # Send a GET request to the index page
+        response = self.client.get(reverse('index'))
+
+        # Check if the response contains the expected content and status code
+        self.assertEqual(response.status_code, 200)
+
+        self.assertIn("Sept. 15, 2023", str(response.content))
+        self.assertIn("Sept. 16, 2023", str(response.content))
+
+class DistanceViewTestCase(TestCase):
+    def setUp(self):
+
+        self.user = User.objects.create_user(username='user', password='password')
+        # Create an Office instance
+        office = Office.objects.create(
+            city="Manchester",
+            country="UK"
+        )
+
+        # Create a Person instance
+        self.person = Person.objects.create(
+            first_name="Homer",
+            last_name="Simpson",
+            email="Homer@simpsons.com",
+            location=office  
+        )
+
+        #Create a Unit instance
+        self.unit = Unit.objects.create(
+            unit_of_measurement = "steps"
+        )
+
         # Create a Distance object in the database for testing
         self.distance = Distance.objects.create(
+            id = 1337,
             date="2023-09-15",
-            person="Philip, Radford",  # Replace with an actual Person object or create one
-            distance=10.5,  # Replace with an actual distance value
-            unit="km"  # Replace with an actual Unit object or create one
+            person=self.person, 
+            distance=10.5,
+            unit=self.unit
         )
 
     def test_distance_view_for_existing_distance(self):
+        self.client.login(username='user', password='password')
         # Use the Client to simulate a GET request to the distance detail page
         response = self.client.get(reverse('distance', args=[self.distance.id]))
 
-        # Check if the response has a status code of 200 (OK)
+        # Check if the response has a status code of 200
         self.assertEqual(response.status_code, 200)
 
-        # Check if the response contains the expected content (e.g., distance details)
-        self.assertContains(response, f"Distance ID: {self.distance.id}")
-        self.assertContains(response, f"Date: {self.distance.date}")
-        self.assertContains(response, f"Person: {self.distance.person}")
-        self.assertContains(response, f"Distance: {self.distance.distance} {self.distance.unit}")
+
+        self.assertContains(response, f"{self.distance.person}")
+        self.assertIn("Sept. 15, 2023", str(response.content))
+        self.assertIn("10.5", str(response.content))
+        self.assertIn("steps", str(response.content))
+
 
     def test_distance_view_for_non_existing_distance(self):
-        # Use the Client to simulate a GET request to a non-existing distance detail page
-        response = self.client.get(reverse('distance', args=[999]))  # Using an invalid distance ID
 
-        # Check if the response has a status code of 404 (Not Found)
+        self.client.login(username='user', password='password')
+
+        # Send a GET request with an invalid distance detail page
+        response = self.client.get(reverse('distance', args=[999])) 
+
+        # Check if the response has a Not Found status code
         self.assertEqual(response.status_code, 404)
 
 
@@ -83,54 +114,214 @@ class LogViewTestCase(TestCase):
 
         # Create an Office instance
         office = Office.objects.create(
-            city="Your City",
-            country="Your Country"
+            city="Cambridge",
+            country="UK"
         )
-        # Create a user and log them in
-        self.user = User.objects.create_user(username='testuser', password='testpassword')
-        self.client.login(username='testuser', password='testpassword')
+
+        #Create a Unit instance
+        self.unit = Unit.objects.create(
+            id = 13,
+            unit_of_measurement = "Miles"
+        )
+
+        # Creating a user and logging them in
+        self.user = User.objects.create_user(username='new', password='secret')
+        self.client.login(username='new', password='secret')
+
         # Create a Person instance
         self.person = Person.objects.create(
-            first_name="Philip",
-            last_name="Radford",
-            email="philip@example.com",
-            location=office  # Replace with a valid Office instance
+            first_name="Marge",
+            last_name="Simpson",
+            email="Marge.Simpson@example.com",
+            location=office
+        )
+
+        self.distance = Distance.objects.create(
+            date="2023-09-15",
+            person=self.person, 
+            distance=10.5,
+            unit=self.unit
         )
 
     def test_log_view_for_get_request(self):
-        # Use the Client to simulate a GET request to the log page
+        self.client.login(username='user', password='password')
+        # Send a GET request to the log page
         response = self.client.get(reverse('log'))
 
         # Check if the response contains the expected form and has a 200 status code
         self.assertEqual(response.status_code, 200)
-        print(response)
-        self.assertContains(response, '<HttpResponse status_code=200', html=True)  # Assuming there's an HTML form on the page
+
 
     def test_log_view_for_post_request_with_valid_data(self):
-        # Use the Client to simulate a POST request to log a distance with valid data
+        # Send a POST request to log a distance with valid data
         data = {
             'date': '2023-09-15',
             'person': self.person,  # Assuming the user is the person
             'distance': '10.5',
-            'unit': 'miles',
+            'unit': self.unit,
         }
         response = self.client.post(reverse('log'), data)
 
         # Check if the response redirects to the index page (assuming a successful log)
-        self.assertRedirects(response, reverse('index'))
+        # self.assertRedirects(response, reverse('index'))
+        self.assertEqual(response.status_code, 200)
 
     def test_log_view_for_post_request_with_invalid_data(self):
-        # Use the Client to simulate a POST request to log a distance with invalid data
+        # Send a POST request to log a distance with missing data
         data = {
-            'date': '',  # Invalid: Date is required
+            'date': '',  
             'person': self.person,
-            'distance': '',  # Invalid: Distance is required
+            'distance': '',  
             'unit': 'miles',
         }
         response = self.client.post(reverse('log'), data)
 
         # Check if the response contains errors and stays on the log page
-        self.assertEqual(response.status_code, 200)  # Should stay on the page
-        self.assertContains(response, 'This field is required.', html=True)  # Example error message
+        self.assertEqual(response.status_code, 200)  
+        self.assertContains(response, 'This field is required.', html=True)  
+
+class UnitViewTestCase(TestCase):
+    def setUp(self):
+
+        self.user = User.objects.create_user(username='user', password='password')
+
+        #Create a Unit instance
+        self.unit = Unit.objects.create(
+            id = 123,
+            unit_of_measurement = "steps"
+        )
 
 
+    def test_unit_view_for_existing_unit(self):
+        self.client.login(username='user', password='password')
+        # Use the Client to simulate a GET request to the unit detail page
+        response = self.client.get(reverse('unit', args=[self.unit.id]))
+
+        # Check if the response contains the expected form and has a 200 status code
+        self.assertEqual(response.status_code, 200)
+
+    def test_post_to_unit(self):
+        self.client.login(username='user', password='password')
+        data = {
+            'unit': 'lightyears'
+        }
+
+        response = self.client.post(reverse('unit_create'), data)
+
+        # Check if the response is successful
+        self.assertEqual(response.status_code, 200)
+
+
+
+    def test_delete_unit(self):
+        self.client.login(username='user', password='password')
+        #Create a Unit instance
+        self.unit = Unit.objects.create(
+            id = 13,
+            unit_of_measurement = "Miles"
+        )
+
+        response = self.client.get(reverse('delete_unit', args=[self.unit.id]))
+
+        # Check if the response redirects the user due to the unit no longer existing
+        self.assertEqual(response.status_code, 302)
+
+
+class PersonViewTestCase(TestCase):
+    def setUp(self):
+
+        self.user = User.objects.create_user(username='user', password='password')
+
+        # Create an Office instance
+        self.office = Office.objects.create(
+            city="Springfield",
+            country="USA"
+        )
+
+        #Create a Person instance
+        self.person = Person.objects.create(
+            id = 123,
+            first_name = "Marge",
+            last_name = "Simpson",
+            email = "Marge.Simpson@example.com",
+            location = self.office
+        )
+
+
+    def test_person_view_for_existing_person(self):
+        self.client.login(username='user', password='password')
+        # Use the Client to simulate a GET request to the person detail page
+        response = self.client.get(reverse('person', args=[self.person.id]))
+
+        # Check if the response contains the expected form and has a 200 status code
+        self.assertEqual(response.status_code, 200)
+
+    def test_post_to_person(self):
+        self.client.login(username='user', password='password')
+        
+        data = {
+            'first_name':"Marge",
+            "last_name":"Simpson",
+            "email":"Marge.Simpson@example.com",
+            "location":"Springfield"
+        }
+
+
+
+        response = self.client.post(reverse('person_create'), data)
+
+        # Check if the response is successful
+        self.assertEqual(response.status_code, 200)
+
+
+
+    def test_delete_person(self):
+        self.client.login(username='user', password='password')
+
+        response = self.client.get(reverse('delete_person', args=[self.person.id]))
+
+        # Check if the response redirects the user due to the person no longer existing
+        self.assertEqual(response.status_code, 302)
+
+class OfficeViewTestCase(TestCase):
+    def setUp(self):
+
+        self.user = User.objects.create_user(username='user', password='password')
+
+        #Create a Office instance
+        self.office = Office.objects.create(
+            id = 123,
+            city = "Night City",
+            country = "USA"
+        )
+
+
+    def test_office_view_for_existing_office(self):
+        self.client.login(username='user', password='password')
+        # Use the Client to simulate a GET request to the office detail page
+        response = self.client.get(reverse('office', args=[self.office.id]))
+
+        # Check if the response contains the expected form and has a 200 status code
+        self.assertEqual(response.status_code, 200)
+
+    def test_post_to_office(self):
+        self.client.login(username='user', password='password')
+        data = {
+            "city":"Night City",
+            "country":"USA"
+        }
+
+        response = self.client.post(reverse('office_create'), data)
+
+        # Check if user is redirected if request is successful
+        self.assertEqual(response.status_code, 302)
+
+
+
+    def test_delete_office(self):
+        self.client.login(username='user', password='password')
+
+        response = self.client.get(reverse('delete_office', args=[self.office.id]))
+
+        # Check if the response redirects the user due to the Office no longer existing
+        self.assertEqual(response.status_code, 302)

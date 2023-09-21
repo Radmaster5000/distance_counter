@@ -2,6 +2,7 @@
 
 {% block body %}
     <h1>Log distance</h1>
+    <p>Please enter the date in the format YYYY-MM-DD</p>
     <form method="post" novalidate>
         {% csrf_token %}
         {{ form.as_p }}

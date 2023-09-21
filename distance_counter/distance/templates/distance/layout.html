@@ -11,7 +11,7 @@
             {% if request.user.is_authenticated %}
                 <!--ADD ANY LINKS FOR AN AUTHENTICATED USER: LOG DISTANCE, LEADERBOARDS, STATS-->
                 <div style="color: rgb(14, 59, 156); margin: 10px">Currently logged in as: {{ request.user.username | title }}</div>
-                <a href="{% url 'logout' %}">Logout</a>
+                <a href="{% url 'logout' %}" onclick="return confirm('Are you sure you want to log out?')">Logout</a>
                 <a href="{% url 'log' %}">Record Distance</a>
                 <div class="dropdown">
                     <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -54,5 +54,11 @@
         {% block body %}
         {% endblock %}
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+        <script>
+            errors = document.getElementsByClassName("errorlist");
+            if (typeof(errors) != 'undefined' && errors != null){
+                for (let error in errors) {errors[error].setAttribute("style", "color: red; font-weight: bold")};
+            }
+        </script>
     </body>
 </html>
